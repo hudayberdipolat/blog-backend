@@ -98,11 +98,23 @@ func (h handler) Login(ctx *fiber.Ctx) error {
 
 // user Auth end
 
-func (h handler) GetUser(ctx *fiber.Ctx) error {
+// user information
 
+func (h handler) GetUser(ctx *fiber.Ctx) error {
+	phone := ctx.Locals("phone_number")
+	phoneNumber := phone.(string)
+	getUser, err := h.service.GetUser(phoneNumber)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"status":  http.StatusInternalServerError,
+			"error":   err.Error(),
+			"message": "get user error...",
+		})
+	}
 	return ctx.Status(http.StatusOK).JSON(fiber.Map{
 		"status":  http.StatusOK,
-		"message": "get user ...",
+		"user":    getUser,
+		"message": "get user successfully ...",
 	})
 }
 

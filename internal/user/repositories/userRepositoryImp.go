@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"errors"
 	"github.com/hudayberdipolat/blog-backend/internal/user/dto"
 	"github.com/hudayberdipolat/blog-backend/internal/user/models"
 	"github.com/hudayberdipolat/blog-backend/pkg/database"
@@ -37,9 +36,10 @@ func (u userRepositoryImp) CheckPhoneNumber(phoneNumber string) bool {
 
 func (u userRepositoryImp) GetByUser(phoneNumber string) (*models.User, error) {
 	var user models.User
-	database.DB.Where("phone_number=?", phoneNumber).First(&user)
-	if user.ID == 0 {
-		return nil, errors.New("Phone number yada password nadogry!!!")
+
+	if result := database.DB.Where("phone_number=?", phoneNumber).First(&user); result.Error != nil {
+		return nil, result.Error
 	}
+
 	return &user, nil
 }

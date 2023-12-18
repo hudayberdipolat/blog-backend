@@ -5,3 +5,8 @@ type UserResponse struct {
 	PhoneNumber string `json:"phone_number"`
 	AccessToken string `json:"access_token"`
 }
+
+type GetUserResponse struct {
+	FullName    string `json:"full_name"`
+	PhoneNumber string `json:"phone_number"`
+}

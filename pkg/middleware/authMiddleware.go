@@ -10,8 +10,8 @@ import (
 
 // Claims represents the JWT claims.
 type Claims struct {
-	UserID int    `json:"uid"`
-	Email  string `json:"email"`
+	UserID      int    `json:"user_id"`
+	PhoneNumber string `json:"phone_number"`
 	jwt.StandardClaims
 }
 
@@ -34,7 +34,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		})
 	}
 
-	c.Locals("phone_number", claims.Email)
+	c.Locals("phone_number", claims.PhoneNumber)
 	c.Locals("user_id", claims.UserID)
 	return c.Next()
 }

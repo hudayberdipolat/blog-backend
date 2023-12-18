@@ -59,3 +59,15 @@ func (u userServiceImp) LoginUser(request dto.LoginRequest) (*dto.UserResponse, 
 	userResponse.AccessToken = accessToken
 	return &userResponse, nil
 }
+
+func (u userServiceImp) GetUser(phoneNumber string) (*dto.GetUserResponse, error) {
+
+	getUser, err := u.repo.GetByUser(phoneNumber)
+	if err != nil {
+		return nil, err
+	}
+	var userResponse dto.GetUserResponse
+	userResponse.FullName = getUser.FullName
+	userResponse.PhoneNumber = getUser.PhoneNumber
+	return &userResponse, nil
+}
