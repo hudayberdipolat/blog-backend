@@ -5,6 +5,7 @@ import (
 	"github.com/hudayberdipolat/blog-backend/internal/user/dto"
 	"github.com/hudayberdipolat/blog-backend/internal/user/helpers"
 	"github.com/hudayberdipolat/blog-backend/internal/user/repositories"
+	"github.com/hudayberdipolat/blog-backend/pkg/generateToken"
 )
 
 type userServiceImp struct {
@@ -28,9 +29,14 @@ func (u userServiceImp) RegisterUser(authRequest dto.RegisterRequest) (*dto.User
 	if err != nil {
 		return nil, err
 	}
+	accessToken, errToken := generateToken.GenerateToken(user.PhoneNumber, int(user.ID))
+	if errToken != nil {
+		return nil, errToken
+	}
 	var userResponse dto.UserResponse
 	userResponse.FullName = user.FullName
 	userResponse.PhoneNumber = user.PhoneNumber
+	userResponse.AccessToken = accessToken
 	return &userResponse, nil
 }
 
@@ -43,8 +49,13 @@ func (u userServiceImp) LoginUser(request dto.LoginRequest) (*dto.UserResponse, 
 	if errCheckPassword != nil {
 		return nil, errCheckPassword
 	}
+	accessToken, errToken := generateToken.GenerateToken(getUser.PhoneNumber, int(getUser.ID))
+	if errToken != nil {
+		return nil, errToken
+	}
 	var userResponse dto.UserResponse
 	userResponse.FullName = getUser.FullName
 	userResponse.PhoneNumber = getUser.PhoneNumber
+	userResponse.AccessToken = accessToken
 	return &userResponse, nil
 }

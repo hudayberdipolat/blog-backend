@@ -88,8 +88,6 @@ func (h handler) Login(ctx *fiber.Ctx) error {
 			"message": "giris maglumatlary nadogry...",
 		})
 	}
-	// generate access token
-
 	//return response
 	return ctx.Status(http.StatusCreated).JSON(fiber.Map{
 		"status":       http.StatusCreated,
