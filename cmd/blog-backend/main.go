@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/hudayberdipolat/blog-backend/internal/user/routes"
 	"github.com/hudayberdipolat/blog-backend/pkg/config"
 	"github.com/hudayberdipolat/blog-backend/pkg/database"
 	"github.com/hudayberdipolat/blog-backend/pkg/migrations"
@@ -33,6 +34,10 @@ func main() {
 	}
 	log.Println("Table migration...")
 	// migrate table end
+
+	// routes begin
+	routes.UserRoutes(app)
+	// routes end
 	// run server
 	port, ServerRunerr := config.ReadConfig()
 	if ServerRunerr != nil {
