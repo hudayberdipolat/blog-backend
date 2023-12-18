@@ -8,6 +8,19 @@ func NewHandler() handler {
 	return handler{}
 }
 
+// user Auth begin
+func (h handler) Register(ctx *fiber.Ctx) error {
+
+	return nil
+}
+
+func (h handler) Login(ctx *fiber.Ctx) error {
+
+	return nil
+}
+
+// user Auth end
+
 func (h handler) GetUser(ctx *fiber.Ctx) error {
 
 	return nil
