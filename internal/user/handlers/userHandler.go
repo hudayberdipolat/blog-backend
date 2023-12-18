@@ -89,8 +89,8 @@ func (h handler) Login(ctx *fiber.Ctx) error {
 		})
 	}
 	//return response
-	return ctx.Status(http.StatusCreated).JSON(fiber.Map{
-		"status":       http.StatusCreated,
+	return ctx.Status(http.StatusOK).JSON(fiber.Map{
+		"status":       http.StatusOK,
 		"userResponse": userResponse,
 		"message":      "user  login successfully...",
 	})
@@ -100,7 +100,10 @@ func (h handler) Login(ctx *fiber.Ctx) error {
 
 func (h handler) GetUser(ctx *fiber.Ctx) error {
 
-	return nil
+	return ctx.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  http.StatusOK,
+		"message": "get user ...",
+	})
 }
 
 func (h handler) GetAllUsers(ctx *fiber.Ctx) error {

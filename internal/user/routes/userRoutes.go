@@ -5,6 +5,7 @@ import (
 	"github.com/hudayberdipolat/blog-backend/internal/user/handlers"
 	"github.com/hudayberdipolat/blog-backend/internal/user/repositories"
 	"github.com/hudayberdipolat/blog-backend/internal/user/services"
+	"github.com/hudayberdipolat/blog-backend/pkg/middleware"
 )
 
 // user-in oz edip bilmeli zatlary :
@@ -19,10 +20,11 @@ func UserRoutes(router *fiber.App) {
 	router.Post("/register", handler.Register)
 	router.Post("/login", handler.Login)
 	// user auth route end
-
-	router.Get("/user", handler.GetUser)
-	router.Get("/user/update", handler.UpdateUser)
-	router.Get("/user/changePassword", handler.ChangeUserPassword)
-	router.Get("/user/delete", handler.DeleteUser)
+	userGroup := router.Group("/user")
+	userGroup.Use(middleware.AuthMiddleware)
+	userGroup.Get("/", handler.GetUser)
+	userGroup.Get("/update", handler.UpdateUser)
+	userGroup.Get("/changePassword", handler.ChangeUserPassword)
+	userGroup.Get("/delete", handler.DeleteUser)
 
 }
