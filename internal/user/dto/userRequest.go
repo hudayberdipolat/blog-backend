@@ -1,13 +1,13 @@
 package dto
 
-type Register struct {
+type RegisterRequest struct {
 	FullName        string `json:"full_name" validate:"required"`
 	PhoneNumber     string `json:"phone_number" validate:"required,gt=6"`
 	Password        string `json:"password" validate:"required,gt=5"`
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
 }
 
-type Login struct {
+type LoginRequest struct {
 	PhoneNumber string `json:"phone_number" validate:"required"`
 	Password    string `json:"password" validate:"required"`
 }

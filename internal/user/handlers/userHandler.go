@@ -21,7 +21,7 @@ func NewHandler(userService services.UserService) handler {
 
 // user Auth begin
 func (h handler) Register(ctx *fiber.Ctx) error {
-	var registerRequest dto.Register
+	var registerRequest dto.RegisterRequest
 	// body parser
 	if err := ctx.BodyParser(&registerRequest); err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
@@ -51,6 +51,7 @@ func (h handler) Register(ctx *fiber.Ctx) error {
 		})
 	}
 	// return response
+	// generate access token
 	return ctx.Status(http.StatusCreated).JSON(fiber.Map{
 		"status":       http.StatusCreated,
 		"userResponse": userResponse,
@@ -59,8 +60,42 @@ func (h handler) Register(ctx *fiber.Ctx) error {
 }
 
 func (h handler) Login(ctx *fiber.Ctx) error {
+	var loginRequest dto.LoginRequest
+	// body parser
+	if err := ctx.BodyParser(&loginRequest); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   err.Error(),
+			"message": "Body parser error",
+		})
+	}
+	// validate
+	validate := validator.New()
+	if validateError := validate.Struct(&loginRequest); validateError != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   validateError.Error(),
+			"message": "Validation error",
+		})
+	}
 
-	return nil
+	// check user -->> user barlag
+	userResponse, err := h.service.LoginUser(loginRequest)
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   err.Error(),
+			"message": "giris maglumatlary nadogry...",
+		})
+	}
+	// generate access token
+
+	//return response
+	return ctx.Status(http.StatusCreated).JSON(fiber.Map{
+		"status":       http.StatusCreated,
+		"userResponse": userResponse,
+		"message":      "user  login successfully...",
+	})
 }
 
 // user Auth end

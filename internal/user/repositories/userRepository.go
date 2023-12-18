@@ -6,6 +6,7 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(registerUser dto.Register) (*models.User, error)
+	CreateUser(registerUser dto.RegisterRequest) (*models.User, error)
 	CheckPhoneNumber(phoneNumber string) bool
+	GetByUser(phoneNumber string) (*models.User, error)
 }

@@ -17,7 +17,7 @@ func NewUserService(userRepo repositories.UserRepository) UserService {
 	}
 }
 
-func (u userServiceImp) RegisterUser(authRequest dto.Register) (*dto.UserResponse, error) {
+func (u userServiceImp) RegisterUser(authRequest dto.RegisterRequest) (*dto.UserResponse, error) {
 	password := helpers.GeneratePassword(authRequest.Password)
 	authRequest.Password = password
 	checkUser := u.repo.CheckPhoneNumber(authRequest.PhoneNumber)
@@ -31,5 +31,20 @@ func (u userServiceImp) RegisterUser(authRequest dto.Register) (*dto.UserRespons
 	var userResponse dto.UserResponse
 	userResponse.FullName = user.FullName
 	userResponse.PhoneNumber = user.PhoneNumber
+	return &userResponse, nil
+}
+
+func (u userServiceImp) LoginUser(request dto.LoginRequest) (*dto.UserResponse, error) {
+	getUser, err := u.repo.GetByUser(request.PhoneNumber)
+	if err != nil {
+		return nil, err
+	}
+	errCheckPassword := helpers.CheckPassword(getUser.Password, request.Password)
+	if errCheckPassword != nil {
+		return nil, errCheckPassword
+	}
+	var userResponse dto.UserResponse
+	userResponse.FullName = getUser.FullName
+	userResponse.PhoneNumber = getUser.PhoneNumber
 	return &userResponse, nil
 }
