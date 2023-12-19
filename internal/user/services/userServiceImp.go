@@ -29,6 +29,7 @@ func (u userServiceImp) RegisterUser(authRequest dto.RegisterRequest) (*dto.User
 	if err != nil {
 		return nil, err
 	}
+
 	accessToken, errToken := generateToken.GenerateToken(user.PhoneNumber, int(user.ID))
 	if errToken != nil {
 		return nil, errToken

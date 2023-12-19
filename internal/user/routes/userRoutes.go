@@ -23,7 +23,7 @@ func UserRoutes(router *fiber.App) {
 	userGroup := router.Group("/user")
 	userGroup.Use(middleware.AuthMiddleware)
 	userGroup.Get("/", handler.GetUser)
-	userGroup.Get("/update", handler.UpdateUser)
+	userGroup.Put("/update", handler.UpdateUser)
 	userGroup.Get("/changePassword", handler.ChangeUserPassword)
 	userGroup.Get("/delete", handler.DeleteUser)
 

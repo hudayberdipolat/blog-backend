@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/hudayberdipolat/blog-backend/internal/user/dto"
 	"github.com/hudayberdipolat/blog-backend/internal/user/services"
+	"net/http"
 )
 
 type handler struct {
@@ -58,7 +57,6 @@ func (h handler) Register(ctx *fiber.Ctx) error {
 		"message":      "user  created successfully...",
 	})
 }
-
 func (h handler) Login(ctx *fiber.Ctx) error {
 	var loginRequest dto.LoginRequest
 	// body parser
@@ -85,7 +83,7 @@ func (h handler) Login(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"status":  http.StatusBadRequest,
 			"error":   err.Error(),
-			"message": "giris maglumatlary nadogry...",
+			"message": "phone number yada password nadogry",
 		})
 	}
 	//return response
@@ -118,27 +116,21 @@ func (h handler) GetUser(ctx *fiber.Ctx) error {
 	})
 }
 
-func (h handler) GetAllUsers(ctx *fiber.Ctx) error {
-
-	return nil
-}
-
-func (h handler) CreateUser(ctx *fiber.Ctx) error {
-
-	return nil
-}
-
 func (h handler) UpdateUser(ctx *fiber.Ctx) error {
+	return nil
+}
+
+func (h handler) ChangeUserPassword(ctx *fiber.Ctx) error {
+
+	return nil
+}
+
+func (h handler) LogoutUser(ctx *fiber.Ctx) error {
 
 	return nil
 }
 
 func (h handler) DeleteUser(ctx *fiber.Ctx) error {
-
-	return nil
-}
-
-func (h handler) ChangeUserPassword(ctx *fiber.Ctx) error {
 
 	return nil
 }

@@ -1,8 +1,9 @@
 package generateToken
 
 import (
-	"github.com/golang-jwt/jwt"
 	"time"
+
+	"github.com/golang-jwt/jwt"
 )
 
 var JwtKey = []byte("AIHnaSDFhs!@#mdfshdfoin_I(JNsd")
@@ -10,11 +11,10 @@ var JwtKey = []byte("AIHnaSDFhs!@#mdfshdfoin_I(JNsd")
 func GenerateToken(phoneNumber string, userId int) (string, error) {
 	// Create the token
 	token := jwt.New(jwt.SigningMethodHS256)
-
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["phone_number"] = phoneNumber
-	claims["uid"] = userId
+	claims["user_id"] = userId
 	claims["exp"] = time.Now().Add(time.Hour * 12).Unix() // Token expires in 12 hours
 
 	// Sign the token with the secret key
