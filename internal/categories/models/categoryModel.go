@@ -6,8 +6,8 @@ import (
 
 type Category struct {
 	gorm.Model
-	CategoryName string `json:"category_name"`
-	CategorySlug string `json:"category_slug"`
+	CategoryName string `json:"category_name" gorm:"not null,unique"`
+	CategorySlug string `json:"category_slug" gorm:"not null,unique"`
 }
 
 func (*Category) TableName() string {

@@ -41,9 +41,9 @@ func main() {
 	categoryRoutes.CategoryRoutes(app)
 	// routes end
 	// run server
-	port, ServerRunerr := config.ReadConfig()
-	if ServerRunerr != nil {
-		log.Println(ServerRunerr.Error())
+	port, ServerRunErr := config.ReadConfig()
+	if ServerRunErr != nil {
+		log.Println(ServerRunErr.Error())
 	}
 	log.Println("server running... ")
 	log.Printf("RUN PORT:%s", port)

@@ -95,6 +95,7 @@ func (u userServiceImp) UpdateUser(userID int, request dto.UpdateUserRequest) (*
 	}
 	// return user response
 	var userResponse dto.UserResponse
+	userResponse.ID = uint(userID)
 	userResponse.FullName = updateUser.FullName
 	userResponse.PhoneNumber = updateUser.PhoneNumber
 	userResponse.AccessToken = accessToken
