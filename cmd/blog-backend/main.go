@@ -1,11 +1,12 @@
 package main
 
 import (
+	categoryRoutes "github.com/hudayberdipolat/blog-backend/internal/categories/routes"
 	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/hudayberdipolat/blog-backend/internal/user/routes"
+	userRoutes "github.com/hudayberdipolat/blog-backend/internal/user/routes"
 	"github.com/hudayberdipolat/blog-backend/pkg/config"
 	"github.com/hudayberdipolat/blog-backend/pkg/database"
 	"github.com/hudayberdipolat/blog-backend/pkg/migrations"
@@ -36,7 +37,8 @@ func main() {
 	// migrate table end
 
 	// routes begin
-	routes.UserRoutes(app)
+	userRoutes.UserRoutes(app)
+	categoryRoutes.CategoryRoutes(app)
 	// routes end
 	// run server
 	port, ServerRunerr := config.ReadConfig()
