@@ -72,3 +72,28 @@ func (u userServiceImp) GetUser(phoneNumber string) (*dto.GetUserResponse, error
 	userResponse.PhoneNumber = getUser.PhoneNumber
 	return &userResponse, nil
 }
+
+func (u userServiceImp) UpdateUser(userID int, request dto.UpdateUserRequest) (*dto.UserResponse, error) {
+	// userin phone numberin on barlygyny yada yoklugyny barlamaly servicede yerine yetirmeli
+	checkUser := u.repo.UpdatePhoneNumber(userID, request.PhoneNumber)
+	if checkUser != false {
+		return nil, errors.New("Bu telefon belgisi eyyam ulanylyar!!!")
+	}
+	// update user
+	updateUser, errUpdate := u.repo.UserUpdate(userID, request)
+	if errUpdate != nil {
+		return nil, errUpdate
+	}
+
+	// generate token
+	accessToken, errToken := generateToken.GenerateToken(updateUser.PhoneNumber, int(updateUser.ID))
+	if errToken != nil {
+		return nil, errToken
+	}
+	// return user response
+	var userResponse dto.UserResponse
+	userResponse.FullName = updateUser.FullName
+	userResponse.PhoneNumber = updateUser.PhoneNumber
+	userResponse.AccessToken = accessToken
+	return &userResponse, nil
+}

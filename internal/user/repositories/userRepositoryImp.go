@@ -43,3 +43,25 @@ func (u userRepositoryImp) GetByUser(phoneNumber string) (*models.User, error) {
 
 	return &user, nil
 }
+
+func (i userRepositoryImp) UpdatePhoneNumber(userID int, phoneNumber string) bool {
+	var user models.User
+	database.DB.Where("id != ?", userID).Where("phone_number=?", phoneNumber).First(&user)
+	if user.ID == 0 {
+		return false
+	}
+	return true
+}
+
+func (u userRepositoryImp) UserUpdate(userID int, updateRequest dto.UpdateUserRequest) (*models.User, error) {
+	// update user
+	var user models.User
+	result := database.DB.Model(&user).Where("id = ?", userID).Updates(models.User{
+		FullName:    updateRequest.FullName,
+		PhoneNumber: updateRequest.PhoneNumber,
+	})
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}

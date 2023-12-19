@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/hudayberdipolat/blog-backend/internal/user/dto"
 	"github.com/hudayberdipolat/blog-backend/internal/user/services"
+	"log"
 	"net/http"
 )
 
@@ -117,7 +118,43 @@ func (h handler) GetUser(ctx *fiber.Ctx) error {
 }
 
 func (h handler) UpdateUser(ctx *fiber.Ctx) error {
-	return nil
+	id := ctx.Locals("user_id")
+	userID := id.(int)
+	var updateUserRequest dto.UpdateUserRequest
+	log.Println("user_id ---->>>>>>>>", userID)
+	// body parser
+	if err := ctx.BodyParser(&updateUserRequest); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   err.Error(),
+			"message": "body parser error",
+		})
+	}
+	// validation
+	validate := validator.New()
+	if errValidate := validate.Struct(&updateUserRequest); errValidate != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   errValidate.Error(),
+			"message": "validator error",
+		})
+	}
+	// update user
+	userResponse, errUserUpdate := h.service.UpdateUser(userID, updateUserRequest)
+	if errUserUpdate != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   errUserUpdate.Error(),
+			"message": "update user  error",
+		})
+	}
+	// return response
+	return ctx.Status(http.StatusOK).JSON(fiber.Map{
+		"status":    http.StatusOK,
+		"message":   "user update successfully",
+		"user_id":   userID,
+		"user_data": userResponse,
+	})
 }
 
 func (h handler) ChangeUserPassword(ctx *fiber.Ctx) error {
