@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/hudayberdipolat/blog-backend/internal/user/dto"
 	"github.com/hudayberdipolat/blog-backend/internal/user/services"
-	"log"
 	"net/http"
 )
 
@@ -77,7 +76,6 @@ func (h handler) Login(ctx *fiber.Ctx) error {
 			"message": "Validation error",
 		})
 	}
-
 	// check user -->> user barlag
 	userResponse, err := h.service.LoginUser(loginRequest)
 	if err != nil {
@@ -121,7 +119,7 @@ func (h handler) UpdateUser(ctx *fiber.Ctx) error {
 	id := ctx.Locals("user_id")
 	userID := id.(int)
 	var updateUserRequest dto.UpdateUserRequest
-	log.Println("user_id ---->>>>>>>>", userID)
+
 	// body parser
 	if err := ctx.BodyParser(&updateUserRequest); err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
@@ -158,8 +156,39 @@ func (h handler) UpdateUser(ctx *fiber.Ctx) error {
 }
 
 func (h handler) ChangeUserPassword(ctx *fiber.Ctx) error {
-
-	return nil
+	userID := ctx.Locals("user_id").(int)
+	var changePasswordRequest dto.ChangeUserPasswordRequest
+	// body parser
+	if err := ctx.BodyParser(&changePasswordRequest); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   err.Error(),
+			"message": "body parser error",
+		})
+	}
+	// validation
+	validate := validator.New()
+	if validateError := validate.Struct(&changePasswordRequest); validateError != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"error":   validateError.Error(),
+			"message": "change password validate error",
+		})
+	}
+	// update password
+	errorUserPasswordChange := h.service.PasswordChange(userID, changePasswordRequest)
+	if errorUserPasswordChange != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"status":  http.StatusInternalServerError,
+			"error":   errorUserPasswordChange.Error(),
+			"message": "change password error",
+		})
+	}
+	//return response
+	return ctx.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  http.StatusOK,
+		"message": "user Password Changed Successfully",
+	})
 }
 
 func (h handler) LogoutUser(ctx *fiber.Ctx) error {

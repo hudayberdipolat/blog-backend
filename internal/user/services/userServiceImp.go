@@ -6,6 +6,7 @@ import (
 	"github.com/hudayberdipolat/blog-backend/internal/user/helpers"
 	"github.com/hudayberdipolat/blog-backend/internal/user/repositories"
 	"github.com/hudayberdipolat/blog-backend/pkg/generateToken"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userServiceImp struct {
@@ -35,6 +36,7 @@ func (u userServiceImp) RegisterUser(authRequest dto.RegisterRequest) (*dto.User
 		return nil, errToken
 	}
 	var userResponse dto.UserResponse
+	userResponse.ID = user.ID
 	userResponse.FullName = user.FullName
 	userResponse.PhoneNumber = user.PhoneNumber
 	userResponse.AccessToken = accessToken
@@ -55,6 +57,7 @@ func (u userServiceImp) LoginUser(request dto.LoginRequest) (*dto.UserResponse, 
 		return nil, errToken
 	}
 	var userResponse dto.UserResponse
+	userResponse.ID = getUser.ID
 	userResponse.FullName = getUser.FullName
 	userResponse.PhoneNumber = getUser.PhoneNumber
 	userResponse.AccessToken = accessToken
@@ -62,12 +65,12 @@ func (u userServiceImp) LoginUser(request dto.LoginRequest) (*dto.UserResponse, 
 }
 
 func (u userServiceImp) GetUser(phoneNumber string) (*dto.GetUserResponse, error) {
-
 	getUser, err := u.repo.GetByUser(phoneNumber)
 	if err != nil {
 		return nil, err
 	}
 	var userResponse dto.GetUserResponse
+	userResponse.ID = getUser.ID
 	userResponse.FullName = getUser.FullName
 	userResponse.PhoneNumber = getUser.PhoneNumber
 	return &userResponse, nil
@@ -86,7 +89,7 @@ func (u userServiceImp) UpdateUser(userID int, request dto.UpdateUserRequest) (*
 	}
 
 	// generate token
-	accessToken, errToken := generateToken.GenerateToken(updateUser.PhoneNumber, int(updateUser.ID))
+	accessToken, errToken := generateToken.GenerateToken(updateUser.PhoneNumber, userID)
 	if errToken != nil {
 		return nil, errToken
 	}
@@ -96,4 +99,31 @@ func (u userServiceImp) UpdateUser(userID int, request dto.UpdateUserRequest) (*
 	userResponse.PhoneNumber = updateUser.PhoneNumber
 	userResponse.AccessToken = accessToken
 	return &userResponse, nil
+}
+
+func (u userServiceImp) PasswordChange(userID int, updatePasswordRequest dto.ChangeUserPasswordRequest) error {
+	/*
+		onki bar bolan password bilen old password gelyan data denmi sol ikisini denesdirmeli get user
+		bilen user datany aldyrmaly --> useri id bilen cekdirmeli we sol userin passwordyny requestden
+		gelen password bilen denesdirmeli
+	*/
+
+	// get user
+	getUser, err := u.repo.GetUserByID(userID)
+	if err != nil {
+		return err
+	}
+	// old password barlag
+	errHashPasswordBarlag := bcrypt.CompareHashAndPassword([]byte(getUser.Password), []byte(updatePasswordRequest.OldPassword))
+	if errHashPasswordBarlag != nil {
+		return errors.New("Kone passwordynyz nadogry!!!")
+	}
+	// update user password
+	newPassword := helpers.GeneratePassword(updatePasswordRequest.Password)
+	errUpdatePassword := u.repo.ChangePassword(userID, newPassword)
+	if errUpdatePassword != nil {
+		return errUpdatePassword
+	}
+	// return data
+	return nil
 }

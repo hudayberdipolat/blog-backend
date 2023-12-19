@@ -33,7 +33,6 @@ func AuthMiddleware(c *fiber.Ctx) error {
 			"status": http.StatusUnauthorized,
 		})
 	}
-
 	c.Locals("phone_number", claims.PhoneNumber)
 	c.Locals("user_id", claims.UserID)
 	return c.Next()

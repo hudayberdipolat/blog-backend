@@ -11,4 +11,6 @@ type UserRepository interface {
 	GetByUser(phoneNumber string) (*models.User, error)
 	UserUpdate(userID int, updateRequest dto.UpdateUserRequest) (*models.User, error)
 	UpdatePhoneNumber(userID int, phoneNumber string) bool
+	ChangePassword(userID int, newPassword string) error
+	GetUserByID(userID int) (*models.User, error)
 }

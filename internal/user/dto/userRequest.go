@@ -17,8 +17,8 @@ type UpdateUserRequest struct {
 	PhoneNumber string `json:"phone_number" validate:"required,min=6"`
 }
 
-type ChangeUserPassword struct {
+type ChangeUserPasswordRequest struct {
 	OldPassword     string `json:"old_password" validate:"required"`
 	Password        string `json:"password" validate:"required,min=5"`
-	ConfirmPassword string `json:"confirm_password" validate:"required,min=5"`
+	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
 }
