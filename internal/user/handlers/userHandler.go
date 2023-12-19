@@ -191,12 +191,21 @@ func (h handler) ChangeUserPassword(ctx *fiber.Ctx) error {
 	})
 }
 
-func (h handler) LogoutUser(ctx *fiber.Ctx) error {
-
-	return nil
-}
-
 func (h handler) DeleteUser(ctx *fiber.Ctx) error {
-
-	return nil
+	userID := ctx.Locals("user_id").(int)
+	phoneNumber := ctx.Locals("phone_number").(string)
+	// delete user
+	deleteUserError := h.service.UserDelete(userID, phoneNumber)
+	if deleteUserError != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  http.StatusBadRequest,
+			"message": "user not deleted",
+			"error":   deleteUserError.Error(),
+		})
+	}
+	ctx.Set("Authorization", "")
+	return ctx.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  http.StatusOK,
+		"message": "user deleted successfully",
+	})
 }

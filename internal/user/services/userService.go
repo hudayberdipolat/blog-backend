@@ -10,4 +10,5 @@ type UserService interface {
 	GetUser(phoneNumber string) (*dto.GetUserResponse, error)
 	UpdateUser(userID int, request dto.UpdateUserRequest) (*dto.UserResponse, error)
 	PasswordChange(userID int, updatePasswordRequest dto.ChangeUserPasswordRequest) error
+	UserDelete(userID int, phoneNumber string) error
 }

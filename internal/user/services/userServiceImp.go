@@ -127,3 +127,12 @@ func (u userServiceImp) PasswordChange(userID int, updatePasswordRequest dto.Cha
 	// return data
 	return nil
 }
+
+func (u userServiceImp) UserDelete(userID int, phoneNumber string) error {
+	// DELETE USER
+	deleteUserError := u.repo.DeleteUser(userID, phoneNumber)
+	if deleteUserError != nil {
+		return deleteUserError
+	}
+	return nil
+}

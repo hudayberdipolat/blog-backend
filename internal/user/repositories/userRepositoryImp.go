@@ -82,3 +82,12 @@ func (u userRepositoryImp) ChangePassword(userID int, newPassword string) error 
 	}
 	return nil
 }
+
+func (u userRepositoryImp) DeleteUser(userID int, phoneNumber string) error {
+	var user models.User
+	result := database.DB.Unscoped().Where("id = ?", userID).Where("phone_number =?", phoneNumber).Delete(&user)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

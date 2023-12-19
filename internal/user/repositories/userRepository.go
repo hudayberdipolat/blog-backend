@@ -13,4 +13,5 @@ type UserRepository interface {
 	UpdatePhoneNumber(userID int, phoneNumber string) bool
 	ChangePassword(userID int, newPassword string) error
 	GetUserByID(userID int) (*models.User, error)
+	DeleteUser(userID int, phoneNumber string) error
 }
